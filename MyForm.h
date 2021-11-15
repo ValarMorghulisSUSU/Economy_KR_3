@@ -267,6 +267,7 @@ namespace Practive5 {
 			this->Controls->Add(this->start_cost);
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->groupBox1->ResumeLayout(false);
 			this->groupBox1->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
@@ -277,30 +278,48 @@ namespace Practive5 {
 
 		}
 #pragma endregion
+	
+		double sum(array <double>^ am) {
+			double sum = 0;
+			for (int i = 0; i < am->Length; i++) {
+				sum += am[i];
+			}
+			return sum;
+		}
+
+		//Линейный метод
 		array <double>^ amortiz1(int period, double start_cost) {
-			double k = 1. / period * 100;
+			double k = 1. / period;
 			List<double>^ list = gcnew List <double>;
 			for (int i = 0; i < period; i++) {
-				double am = start_cost * k;
+				double am = Math::Round(start_cost * k,2);
 				list->Add(am);
 			}
 			return list->ToArray();
 		}
 
+		//Методом уменьшаемого остатка с учетом коэффициента ускорения
 		array <double>^ amortiz2(bool y_or_m, int period, double start_cost, double ratio) {
 			//True - years
 			//False - months
+
 			double ostatok = start_cost;
 			List<double>^ list = gcnew List <double>;
-			if (y_or_m)
-				for (int i = 0; i < period; i++) {
-					double am = ostatok / (period * ratio);
+			if (y_or_m) {
+				double norm = 1./period;
+				double am = ostatok * norm * ratio;
+				double ostatok = start_cost - am;
+				list->Add(am);
+				for (int i = 1; i < period; i++) {
+					am = ostatok * norm * (i+1);
 					ostatok -= am;
 					list->Add(am);
 				}
+			}
 			else {
+				//НЕ СДЕЛАНО!!!!!!!!!!!!!!!!!!!!
 				while (period > 0) {
-					double am = ostatok * ratio / period;
+					double am = Math::Round(ostatok * ratio / period, 2);
 					ostatok -= am;
 					period--;
 					list->Add(am);
@@ -308,6 +327,33 @@ namespace Practive5 {
 			}
 			return list->ToArray();
 		}
+
+		//Прямым методом суммы числа лет
+		array <double>^ amortiz3(bool y_or_m, int period, double start_cost) {
+			//True - years
+			//False - months
+
+			List<double>^ list = gcnew List <double>;
+			//int test = period;
+			if (y_or_m) {
+				/*for (int i = 0; i < period; i++) {
+					double am = Math::Round(start_cost * (test/fact(period)),2);
+					test--;
+					list->Add(am);
+				}*/
+				double am = 0;
+				double sum_let = (period * (period + 1)) / 2;
+				double ostatok = start_cost;
+				for (int i = 0; i < period; i++)
+				{
+					am = (period - i) / sum_let * start_cost;
+					ostatok -= am;
+					list->Add(am);
+				}
+			}
+			return list->ToArray();
+		}
+
 		void full_DGV(System::Windows::Forms::DataGridView^ sender, int period, double sc, double ratio) {
 			sender->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
 			sender->AutoResizeColumns();
@@ -319,19 +365,26 @@ namespace Practive5 {
 			array <double>^ am2 = gcnew array<double>(period);
 			array <double>^ am3 = gcnew array<double>(period);
 
-			if (this->radioButton1->Checked) { // По годам
+			int check = 0;
+
+			//Years
+			if (this->radioButton1->Checked) {
 				List<String^> list;
 				list.Add("Год");
 				if (this->method1->Checked) {
 					list.Add("Линейный метод");
 					am1 = amortiz1(period, sc);
+					check++;
 				}
 				if (this->method2->Checked) {
 					list.Add("Методом уменьшаемого остатка с учетом коэффициента ускорения");
 					am2 = amortiz2(true, period, sc, ratio);
+					check++;
 				}
 				if (this->method3->Checked) {
 					list.Add("Метод суммы числа лет");
+					am3 = amortiz3(true, period, sc);
+					check++;
 				}
 
 				int i = 0;
@@ -340,24 +393,26 @@ namespace Practive5 {
 					sender->Columns->Add("Column" + i, el);
 					i++;
 				}
-				for (int i = 0; i < period; i++) {
-					sender->Rows->Add(i, am1[i], am2[i]);
-				}
-
 			}
-			if (this->radioButton2->Checked) { //По месяцам
+
+			//Month
+			if (this->radioButton2->Checked) {
 				List<String^> list;
 				list.Add("Месяц");
 				if (this->method1->Checked) {
 					list.Add("Линейный метод");
 					am1 = amortiz1(period, sc);
+					check++;
 				}
 				if (this->method2->Checked) {
 					list.Add("Методом уменьшаемого остатка с учетом коэффициента ускорения");
 					am2 = amortiz2(false,period,sc,ratio);
+					check++;
 				}
 				if (this->method3->Checked) {
 					list.Add("Метод суммы числа лет");
+					am3 = amortiz3(true, period, sc);
+					check++;
 				}
 
 				int i = 0;
@@ -366,11 +421,52 @@ namespace Practive5 {
 					sender->Columns->Add("Column" + i, el);
 					i++;
 				}
+			}
 
-				for (int i = 0; i < period; i++) {
-					sender->Rows->Add(i, am1[i], am2[i]);
+			//add to rows
+			for (int i = 0; i < period+1; i++) {
+				if (period + 1 - i == 1) {
+					if (check == 3)
+						sender->Rows->Add("Итого", sum(am1), sum(am2), sum(am3));
+					if (check == 2) {
+						if (this->method1->Checked && this->method2->Checked)
+							sender->Rows->Add("Итого", sum(am1), sum(am2));
+						if (this->method2->Checked && this->method3->Checked)
+							sender->Rows->Add("Итого", sum(am2), sum(am3));
+						if (this->method1->Checked && this->method3->Checked)
+							sender->Rows->Add("Итого", sum(am1), sum(am3));
+					}
+					if (check == 1) {
+						if (this->method1->Checked)
+							sender->Rows->Add("Итого", sum(am1));
+						if (this->method2->Checked)
+							sender->Rows->Add("Итого", sum(am2));
+						if (this->method3->Checked)
+							sender->Rows->Add("Итого", sum(am3));
+					}
+				}
+				else {
+					if (check == 3)
+						sender->Rows->Add(i + 1, am1[i], am2[i], am3[i]);
+					if (check == 2) {
+						if (this->method1->Checked && this->method2->Checked)
+							sender->Rows->Add(i + 1, am1[i], am2[i]);
+						if (this->method2->Checked && this->method3->Checked)
+							sender->Rows->Add(i + 1, am2[i], am3[i]);
+						if (this->method1->Checked && this->method3->Checked)
+							sender->Rows->Add(i + 1, am1[i], am3[i]);
+					}
+					if (check == 1) {
+						if (this->method1->Checked)
+							sender->Rows->Add(i + 1, am1[i]);
+						if (this->method2->Checked)
+							sender->Rows->Add(i + 1, am2[i]);
+						if (this->method3->Checked)
+							sender->Rows->Add(i + 1, am3[i]);
+					}
 				}
 			}
+			
 		}
 
 		
@@ -379,7 +475,6 @@ namespace Practive5 {
 		
 
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-	//this->full_DGV(this->dataGridView1);
 	double start_cost;
 	double ratio;
 	int period;
@@ -391,7 +486,16 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 		period = Convert::ToInt16(this->period->Text);
 		
 		if ((this->radioButton1->Checked || this->radioButton2->Checked) && (this->method1->Checked || this->method2->Checked || this->method3->Checked)) {
-			full_DGV(this->dataGridView1,period,start_cost,ratio);
+			if (this->radioButton2->Checked)
+				if (period > 11)
+					full_DGV(this->dataGridView1,period,start_cost,ratio);
+				else
+					MessageBox::Show("Срок меньше минимального", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			if(this->radioButton1->Checked)
+				if (period >= 1)
+					full_DGV(this->dataGridView1, period, start_cost, ratio);
+				else
+					MessageBox::Show("Срок меньше минимального", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		else
 			MessageBox::Show("Проверьте опции", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
@@ -401,6 +505,11 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 		MessageBox::Show("Проверьте введенные значения", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 	}
 	
+}
+private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+	this->start_cost->Text = "800";
+	this->ratio->Text = "1.8";
+	this->period->Text = "5";
 }
 };
 }
