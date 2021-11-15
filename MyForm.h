@@ -303,7 +303,6 @@ namespace Practive5 {
 			//True - years
 			//False - months
 
-			double ostatok = start_cost;
 			List<double>^ list = gcnew List <double>;
 			if (y_or_m) {
 				double norm = 1./period;
