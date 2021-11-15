@@ -311,17 +311,26 @@ namespace Practive5 {
 				double ostatok = start_cost - am;
 				list->Add(am);
 				for (int i = 1; i < period; i++) {
-					am = ostatok * norm * (i+1);
+					am = Math::Round(ostatok * norm * (i+1),2);
 					ostatok -= am;
 					list->Add(am);
 				}
 			}
 			else {
 				//НЕ СДЕЛАНО!!!!!!!!!!!!!!!!!!!!
-				while (period > 0) {
+				/*while (period>0) {
 					double am = Math::Round(ostatok * ratio / period, 2);
 					ostatok -= am;
 					period--;
+					list->Add(am);
+				}*/
+				double norm = 1. / period;
+				double am = ostatok * norm * ratio;
+				double ostatok = start_cost - am;
+				list->Add(am);
+				for (int i = 1; i < period; i++) {
+					am = ostatok * norm * (i + 1);
+					ostatok -= am;
 					list->Add(am);
 				}
 			}
@@ -329,27 +338,17 @@ namespace Practive5 {
 		}
 
 		//Прямым методом суммы числа лет
-		array <double>^ amortiz3(bool y_or_m, int period, double start_cost) {
-			//True - years
-			//False - months
+		array <double>^ amortiz3(int period, double start_cost) {
 
 			List<double>^ list = gcnew List <double>;
-			//int test = period;
-			if (y_or_m) {
-				/*for (int i = 0; i < period; i++) {
-					double am = Math::Round(start_cost * (test/fact(period)),2);
-					test--;
-					list->Add(am);
-				}*/
-				double am = 0;
-				double sum_let = (period * (period + 1)) / 2;
-				double ostatok = start_cost;
-				for (int i = 0; i < period; i++)
-				{
-					am = (period - i) / sum_let * start_cost;
-					ostatok -= am;
-					list->Add(am);
-				}
+			double am = 0;
+			double sum_let = (period * (period + 1)) / 2;
+			double ostatok = start_cost;
+			for (int i = 0; i < period; i++)
+			{
+				am = Math::Round((period - i) / sum_let * start_cost,2);
+				ostatok -= am;
+				list->Add(am);
 			}
 			return list->ToArray();
 		}
@@ -383,7 +382,7 @@ namespace Practive5 {
 				}
 				if (this->method3->Checked) {
 					list.Add("Метод суммы числа лет");
-					am3 = amortiz3(true, period, sc);
+					am3 = amortiz3(period, sc);
 					check++;
 				}
 
@@ -411,7 +410,7 @@ namespace Practive5 {
 				}
 				if (this->method3->Checked) {
 					list.Add("Метод суммы числа лет");
-					am3 = amortiz3(true, period, sc);
+					am3 = amortiz3(period, sc);
 					check++;
 				}
 
