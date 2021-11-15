@@ -176,9 +176,9 @@ namespace Practive5 {
 				static_cast<System::Byte>(204)));
 			this->label2->Location = System::Drawing::Point(235, 84);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(272, 17);
+			this->label2->Size = System::Drawing::Size(516, 17);
 			this->label2->TabIndex = 5;
-			this->label2->Text = L"Срок полезного использования (в месяцах)";
+			this->label2->Text = L"Срок полезного использования (в зависимости от выбранной опции в блоке выше)";
 			// 
 			// label3
 			// 
@@ -226,7 +226,6 @@ namespace Practive5 {
 			this->groupBox2->TabIndex = 4;
 			this->groupBox2->TabStop = false;
 			this->groupBox2->Text = L"Формат рассчета";
-			this->groupBox2->Enter += gcnew System::EventHandler(this, &MyForm::groupBox2_Enter);
 			// 
 			// radioButton2
 			// 
@@ -278,63 +277,130 @@ namespace Practive5 {
 
 		}
 #pragma endregion
-	
-private: System::Void groupBox2_Enter(System::Object^ sender, System::EventArgs^ e) {
-}
+		array <double>^ amortiz1(int period, double start_cost) {
+			double k = 1. / period * 100;
+			List<double>^ list = gcnew List <double>;
+			for (int i = 0; i < period; i++) {
+				double am = start_cost * k;
+				list->Add(am);
+			}
+			return list->ToArray();
+		}
+
+		array <double>^ amortiz2(bool y_or_m, int period, double start_cost, double ratio) {
+			//True - years
+			//False - months
+			double ostatok = start_cost;
+			List<double>^ list = gcnew List <double>;
+			if (y_or_m)
+				for (int i = 0; i < period; i++) {
+					double am = ostatok / (period * ratio);
+					ostatok -= am;
+					list->Add(am);
+				}
+			else {
+				while (period > 0) {
+					double am = ostatok * ratio / period;
+					ostatok -= am;
+					period--;
+					list->Add(am);
+				}
+			}
+			return list->ToArray();
+		}
+		void full_DGV(System::Windows::Forms::DataGridView^ sender, int period, double sc, double ratio) {
+			sender->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
+			sender->AutoResizeColumns();
+			sender->Rows->Clear();  // удаление всех строк
+			int count = sender->Columns->Count;
+			for (int i = 0; i < count; i++) { sender->Columns->RemoveAt(0); } //удаление всех столбцов
+
+			array <double>^ am1 = gcnew array<double>(period);
+			array <double>^ am2 = gcnew array<double>(period);
+			array <double>^ am3 = gcnew array<double>(period);
+
+			if (this->radioButton1->Checked) { // По годам
+				List<String^> list;
+				list.Add("Год");
+				if (this->method1->Checked) {
+					list.Add("Линейный метод");
+					am1 = amortiz1(period, sc);
+				}
+				if (this->method2->Checked) {
+					list.Add("Методом уменьшаемого остатка с учетом коэффициента ускорения");
+					am2 = amortiz2(true, period, sc, ratio);
+				}
+				if (this->method3->Checked) {
+					list.Add("Метод суммы числа лет");
+				}
+
+				int i = 0;
+				for each (String ^ el in list)
+				{
+					sender->Columns->Add("Column" + i, el);
+					i++;
+				}
+				for (int i = 0; i < period; i++) {
+					sender->Rows->Add(i, am1[i], am2[i]);
+				}
+
+			}
+			if (this->radioButton2->Checked) { //По месяцам
+				List<String^> list;
+				list.Add("Месяц");
+				if (this->method1->Checked) {
+					list.Add("Линейный метод");
+					am1 = amortiz1(period, sc);
+				}
+				if (this->method2->Checked) {
+					list.Add("Методом уменьшаемого остатка с учетом коэффициента ускорения");
+					am2 = amortiz2(false,period,sc,ratio);
+				}
+				if (this->method3->Checked) {
+					list.Add("Метод суммы числа лет");
+				}
+
+				int i = 0;
+				for each (String ^ el in list)
+				{
+					sender->Columns->Add("Column" + i, el);
+					i++;
+				}
+
+				for (int i = 0; i < period; i++) {
+					sender->Rows->Add(i, am1[i], am2[i]);
+				}
+			}
+		}
+
+		
+
+
+		
+
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+	//this->full_DGV(this->dataGridView1);
 	double start_cost;
 	double ratio;
-	double period;
+	int period;
 	try
 	{
 		start_cost = Convert::ToDouble(this->start_cost->Text);
-		ratio = Convert::ToDouble(this->ratio->Text);
-		period = Convert::ToDouble(this->period->Text);
+		String^ str = this->ratio->Text->Replace(".", ",");
+		ratio = Convert::ToDouble(str);
+		period = Convert::ToInt16(this->period->Text);
+		
+		if ((this->radioButton1->Checked || this->radioButton2->Checked) && (this->method1->Checked || this->method2->Checked || this->method3->Checked)) {
+			full_DGV(this->dataGridView1,period,start_cost,ratio);
+		}
+		else
+			MessageBox::Show("Проверьте опции", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 	}
 	catch (...)
 	{
 		MessageBox::Show("Проверьте введенные значения", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 	}
-	this->dataGridView1->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
-	this->dataGridView1->AutoResizeColumns();
-
-	this->dataGridView1->Rows->Clear();  // удаление всех строк
-	int count = this->dataGridView1->Columns->Count;
-	for (int i = 0; i < count; i++) { this->dataGridView1->Columns->RemoveAt(0); } //удаление всех столбцов
-
-	if (this->radioButton1->Checked) { // По годам
-		List<String^> list;
-		list.Add("Год");
-		if (this->method1->Checked)
-			list.Add("Линейный метод");
-		if (this->method2->Checked)
-			list.Add("Методом уменьшаемого остатка с учетом коэффициента ускорения");
-		if (this->method3->Checked)
-			list.Add("Метод суммы числа лет");
-
-		array <String^>^ columnNames = list.ToArray();
-
-		for (int i = 0; i < columnNames->Length; i++) {
-			this->dataGridView1->Columns->Add("Column" + i, columnNames[i]);
-		}
-
-	}
-	if (this->radioButton2->Checked) { //По месяцам
-		List<String^> list;
-		list.Add("Месяц");
-		if (this->method1->Checked)
-			list.Add("Линейный метод");
-		if (this->method2->Checked)
-			list.Add("Методом уменьшаемого остатка с учетом коэффициента ускорения");
-		if (this->method3->Checked)
-			list.Add("Метод суммы числа лет");
-
-		array <String^>^ columnNames = list.ToArray();
-
-		for (int i = 0; i < columnNames->Length; i++) {
-			this->dataGridView1->Columns->Add("Column" + i, columnNames[i]);
-		}
-	}
+	
 }
 };
 }
