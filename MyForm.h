@@ -528,22 +528,6 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 					full_DGV_Chart(this->dataGridView1, this->chart1, period, start_cost, ratio);
 				else
 					MessageBox::Show("Срок меньше минимального", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-			
-
-			/*if (this->method1->Checked)
-				this->chart1->Series->Add("Liner");
-			if (this->method2->Checked)
-				this->chart1->Series->Add("Koef");
-			if (this->method1->Checked)
-				this->chart1->Series->Add("Period");
-
-			for (int i = 0; i < this->chart1->Series->Count; i++) {
-				this->chart1->Series[i]->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
-				for (int j = 0; j < period; j++) {
-					this->chart1->Series[i]->Points->AddXY(j, );
-				}
-			}}*/
-
 		}
 		else
 			MessageBox::Show("Проверьте опции", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
