@@ -360,11 +360,9 @@ namespace Practive5 {
 			List<double>^ list = gcnew List <double>;
 			double am = 0;
 			double sum_let = (period * (period + 1)) / 2;
-			double ostatok = start_cost;
 			for (int i = 0; i < period; i++)
 			{
 				am = Math::Round((period - i) / sum_let * start_cost,2);
-				ostatok -= am;
 				list->Add(am);
 			}
 			return list->ToArray();
