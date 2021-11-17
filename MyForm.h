@@ -19,7 +19,10 @@ namespace Practive5 {
 
 		array <double>^ am1;
 		array <double>^ am2;
-		array <double>^ am3;
+
+	public:
+
+		   array <double>^ am3;
 
 		MyForm(void)
 		{
@@ -77,8 +80,8 @@ namespace Practive5 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^ legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea2 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
 			this->start_cost = (gcnew System::Windows::Forms::TextBox());
 			this->period = (gcnew System::Windows::Forms::TextBox());
 			this->ratio = (gcnew System::Windows::Forms::TextBox());
@@ -212,7 +215,7 @@ namespace Practive5 {
 			this->dataGridView1->BackgroundColor = System::Drawing::Color::White;
 			this->dataGridView1->BorderStyle = System::Windows::Forms::BorderStyle::None;
 			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataGridView1->Location = System::Drawing::Point(15, 219);
+			this->dataGridView1->Location = System::Drawing::Point(15, 251);
 			this->dataGridView1->Name = L"dataGridView1";
 			this->dataGridView1->Size = System::Drawing::Size(535, 373);
 			this->dataGridView1->TabIndex = 7;
@@ -224,7 +227,7 @@ namespace Practive5 {
 			this->button1->Font = (gcnew System::Drawing::Font(L"Segoe UI Semibold", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->button1->ForeColor = System::Drawing::Color::White;
-			this->button1->Location = System::Drawing::Point(15, 159);
+			this->button1->Location = System::Drawing::Point(15, 166);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(1042, 45);
 			this->button1->TabIndex = 8;
@@ -271,12 +274,12 @@ namespace Practive5 {
 			// 
 			// chart1
 			// 
-			chartArea1->Name = L"ChartArea1";
-			this->chart1->ChartAreas->Add(chartArea1);
-			legend1->Docking = System::Windows::Forms::DataVisualization::Charting::Docking::Bottom;
-			legend1->Name = L"Legend1";
-			this->chart1->Legends->Add(legend1);
-			this->chart1->Location = System::Drawing::Point(567, 210);
+			chartArea2->Name = L"ChartArea1";
+			this->chart1->ChartAreas->Add(chartArea2);
+			legend2->Docking = System::Windows::Forms::DataVisualization::Charting::Docking::Bottom;
+			legend2->Name = L"Legend1";
+			this->chart1->Legends->Add(legend2);
+			this->chart1->Location = System::Drawing::Point(567, 228);
 			this->chart1->Name = L"chart1";
 			this->chart1->Size = System::Drawing::Size(490, 410);
 			this->chart1->TabIndex = 9;
@@ -287,7 +290,7 @@ namespace Practive5 {
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::White;
-			this->ClientSize = System::Drawing::Size(1076, 639);
+			this->ClientSize = System::Drawing::Size(1076, 659);
 			this->Controls->Add(this->groupBox1);
 			this->Controls->Add(this->chart1);
 			this->Controls->Add(this->groupBox2);
