@@ -502,19 +502,19 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 		
 		if ((this->radioButton1->Checked || this->radioButton2->Checked) && (this->method1->Checked || this->method2->Checked || this->method3->Checked)) {
 			if (this->radioButton2->Checked)
-				if (period >= 12) {
+				if (period > 12) {
 					full_DGV(this->dataGridView1, period, start_cost, ratio);
 					full_Chart(this->chart1, period);
 				}
 				else
-					MessageBox::Show("Минимальный СПИ - 12 месяцев", "Ошибки", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+					MessageBox::Show("Срок полезного использования > 12 месяцев", "Ошибки", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 			if(this->radioButton1->Checked)
-				if (period >= 1) {
+				if (period > 1) {
 					full_DGV(this->dataGridView1, period, start_cost, ratio);
 					full_Chart(this->chart1, period);
 				}
 				else
-					MessageBox::Show("Минимальный СПИ - 1 год", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+					MessageBox::Show("Срок полезного использования > 1 год", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		else
 			MessageBox::Show("Выберете метод расчета амортизации", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
