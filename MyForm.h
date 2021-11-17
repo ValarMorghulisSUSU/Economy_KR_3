@@ -77,8 +77,8 @@ namespace Practive5 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea3 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^ legend3 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
 			this->start_cost = (gcnew System::Windows::Forms::TextBox());
 			this->period = (gcnew System::Windows::Forms::TextBox());
 			this->ratio = (gcnew System::Windows::Forms::TextBox());
@@ -116,7 +116,7 @@ namespace Practive5 {
 			// 
 			this->period->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->period->Location = System::Drawing::Point(214, 108);
+			this->period->Location = System::Drawing::Point(286, 108);
 			this->period->Name = L"period";
 			this->period->Size = System::Drawing::Size(100, 25);
 			this->period->TabIndex = 1;
@@ -137,7 +137,7 @@ namespace Practive5 {
 			this->groupBox1->Controls->Add(this->method1);
 			this->groupBox1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->groupBox1->Location = System::Drawing::Point(486, 19);
+			this->groupBox1->Location = System::Drawing::Point(612, 19);
 			this->groupBox1->Name = L"groupBox1";
 			this->groupBox1->Size = System::Drawing::Size(445, 114);
 			this->groupBox1->TabIndex = 3;
@@ -190,7 +190,7 @@ namespace Practive5 {
 			this->label2->AutoSize = true;
 			this->label2->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label2->Location = System::Drawing::Point(211, 87);
+			this->label2->Location = System::Drawing::Point(283, 87);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(204, 17);
 			this->label2->TabIndex = 5;
@@ -238,7 +238,7 @@ namespace Practive5 {
 			this->groupBox2->Controls->Add(this->radioButton1);
 			this->groupBox2->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->groupBox2->Location = System::Drawing::Point(214, 19);
+			this->groupBox2->Location = System::Drawing::Point(286, 19);
 			this->groupBox2->Name = L"groupBox2";
 			this->groupBox2->Size = System::Drawing::Size(130, 65);
 			this->groupBox2->TabIndex = 4;
@@ -271,11 +271,11 @@ namespace Practive5 {
 			// 
 			// chart1
 			// 
-			chartArea3->Name = L"ChartArea1";
-			this->chart1->ChartAreas->Add(chartArea3);
-			legend3->Docking = System::Windows::Forms::DataVisualization::Charting::Docking::Bottom;
-			legend3->Name = L"Legend1";
-			this->chart1->Legends->Add(legend3);
+			chartArea1->Name = L"ChartArea1";
+			this->chart1->ChartAreas->Add(chartArea1);
+			legend1->Docking = System::Windows::Forms::DataVisualization::Charting::Docking::Bottom;
+			legend1->Name = L"Legend1";
+			this->chart1->Legends->Add(legend1);
 			this->chart1->Location = System::Drawing::Point(567, 210);
 			this->chart1->Name = L"chart1";
 			this->chart1->Size = System::Drawing::Size(490, 410);
@@ -287,7 +287,7 @@ namespace Practive5 {
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::White;
-			this->ClientSize = System::Drawing::Size(1076, 652);
+			this->ClientSize = System::Drawing::Size(1076, 639);
 			this->Controls->Add(this->groupBox1);
 			this->Controls->Add(this->chart1);
 			this->Controls->Add(this->groupBox2);
@@ -390,7 +390,7 @@ namespace Practive5 {
 				check++;
 			}
 			if (this->method2->Checked) {
-				list->Add("Методом уменьшаемого остатка с учетом коэффициента ускорения");
+				list->Add("Метод уменьшаемого остатка с учетом коэффициента ускорения");
 				am2 = amortiz2(period, sc, ratio);
 				check++;
 			}
@@ -456,26 +456,24 @@ namespace Practive5 {
 			this->chart1->Series->Clear();
 
 			if (this->method1->Checked)
-				this->chart1->Series->Add("Liner");
+				this->chart1->Series->Add("Линейный метод");
 			if (this->method2->Checked)
-				this->chart1->Series->Add("Koef");
+				this->chart1->Series->Add("Метод уменьшаемого остатка с учетом коэффициента ускорения");
 			if (this->method3->Checked)
-				this->chart1->Series->Add("Period");
-
-
+				this->chart1->Series->Add("Метод суммы числа лет");
 
 			for (int i = 0; i < this->chart1->Series->Count; i++) {
 				this->chart1->Series[i]->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
 				this->chart1->Series[i]->Points->Clear();
 				this->chart1->Series[i]->BorderWidth = 5;
 				for (int j = 0; j < period; j++) {
-					if (this->chart1->Series[i]->Name == "Liner") {
+					if (this->chart1->Series[i]->Name == "Линейный метод") {
 						this->chart1->Series[i]->Points->AddXY(j + 1, am1[j]);
 					}
-					if (this->chart1->Series[i]->Name == "Koef") {
+					if (this->chart1->Series[i]->Name == "Метод уменьшаемого остатка с учетом коэффициента ускорения") {
 						this->chart1->Series[i]->Points->AddXY(j + 1, am2[j]);
 					}
-					if (this->chart1->Series[i]->Name == "Period") {
+					if (this->chart1->Series[i]->Name == "Метод суммы числа лет") {
 						this->chart1->Series[i]->Points->AddXY(j + 1, am3[j]);
 					}
 
@@ -503,26 +501,31 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 		
 		if ((this->radioButton1->Checked || this->radioButton2->Checked) && (this->method1->Checked || this->method2->Checked || this->method3->Checked)) {
 			if (this->radioButton2->Checked)
-				if (period >= 12)
-					full_DGV(this->dataGridView1, period,start_cost,ratio);
-				else
-					MessageBox::Show("Срок меньше минимального", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-			if(this->radioButton1->Checked)
-				if (period >= 1)
+				if (period >= 12) {
 					full_DGV(this->dataGridView1, period, start_cost, ratio);
+					full_Chart(this->chart1, period);
+				}
 				else
-					MessageBox::Show("Срок меньше минимального", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+					MessageBox::Show("Минимальный СПИ - 12 месяцев", "Ошибки", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			if(this->radioButton1->Checked)
+				if (period >= 1) {
+					full_DGV(this->dataGridView1, period, start_cost, ratio);
+					full_Chart(this->chart1, period);
+				}
+				else
+					MessageBox::Show("Минимальный СПИ - 1 год", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		else
-			MessageBox::Show("Проверьте опции", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			MessageBox::Show("Выберете метод расчета амортизации", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 	}
 	catch (...)
 	{
-		MessageBox::Show("Проверьте введенные значения", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		MessageBox::Show("Проверьте введенные значения", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 	}
 	
 }
 private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+	this->radioButton1->Checked = true;
 	this->start_cost->Text = "800";
 	this->ratio->Text = "1.8";
 	this->period->Text = "5";
