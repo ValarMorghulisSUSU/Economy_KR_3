@@ -80,8 +80,8 @@ namespace Practive5 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea2 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^ legend2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
 			this->start_cost = (gcnew System::Windows::Forms::TextBox());
 			this->period = (gcnew System::Windows::Forms::TextBox());
 			this->ratio = (gcnew System::Windows::Forms::TextBox());
@@ -274,11 +274,11 @@ namespace Practive5 {
 			// 
 			// chart1
 			// 
-			chartArea2->Name = L"ChartArea1";
-			this->chart1->ChartAreas->Add(chartArea2);
-			legend2->Docking = System::Windows::Forms::DataVisualization::Charting::Docking::Bottom;
-			legend2->Name = L"Legend1";
-			this->chart1->Legends->Add(legend2);
+			chartArea1->Name = L"ChartArea1";
+			this->chart1->ChartAreas->Add(chartArea1);
+			legend1->Docking = System::Windows::Forms::DataVisualization::Charting::Docking::Bottom;
+			legend1->Name = L"Legend1";
+			this->chart1->Legends->Add(legend1);
 			this->chart1->Location = System::Drawing::Point(567, 228);
 			this->chart1->Name = L"chart1";
 			this->chart1->Size = System::Drawing::Size(490, 410);
@@ -466,7 +466,7 @@ namespace Practive5 {
 				this->chart1->Series->Add("Метод суммы числа лет");
 
 			for (int i = 0; i < this->chart1->Series->Count; i++) {
-				this->chart1->Series[i]->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
+				this->chart1->Series[i]->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Column;
 				this->chart1->Series[i]->Points->Clear();
 				this->chart1->Series[i]->BorderWidth = 5;
 				for (int j = 0; j < period; j++) {
