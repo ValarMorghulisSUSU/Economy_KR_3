@@ -166,6 +166,7 @@ namespace Practive5 {
 			this->method2->TabIndex = 1;
 			this->method2->Text = L"Методом уменьшаемого остатка с учетом коэффициента ускорения";
 			this->method2->UseVisualStyleBackColor = true;
+			this->method2->Click += gcnew System::EventHandler(this, &MyForm::method2_Click);
 			// 
 			// method1
 			// 
@@ -184,9 +185,9 @@ namespace Practive5 {
 				static_cast<System::Byte>(204)));
 			this->label1->Location = System::Drawing::Point(12, 19);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(175, 17);
+			this->label1->Size = System::Drawing::Size(240, 17);
 			this->label1->TabIndex = 4;
-			this->label1->Text = L"Первоначальная стоимость";
+			this->label1->Text = L"Первоначальная стоимость (в рублях)";
 			// 
 			// label2
 			// 
@@ -494,27 +495,54 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 		am1 = gcnew array<double>(period);
 		am2 = gcnew array<double>(period);
 		am3 = gcnew array<double>(period);
-
 		start_cost = Convert::ToDouble(this->start_cost->Text);
-		String^ str = this->ratio->Text->Replace(".", ",");
-		ratio = Convert::ToDouble(str);
 		period = Convert::ToInt16(this->period->Text);
 		
 		if ((this->radioButton1->Checked || this->radioButton2->Checked) && (this->method1->Checked || this->method2->Checked || this->method3->Checked)) {
-			if (this->radioButton2->Checked)
-				if (period > 12) {
-					full_DGV(this->dataGridView1, period, start_cost, ratio);
-					full_Chart(this->chart1, period);
+			if (start_cost > 0) {
+				if (this->method2->Checked) {
+					String^ str = this->ratio->Text->Replace(".", ",");
+					ratio = Convert::ToDouble(str);
+					if ((ratio >= 1) && (ratio <= 3)) {
+						if (this->radioButton2->Checked)
+							if (period > 12) {
+								full_DGV(this->dataGridView1, period, start_cost, ratio);
+								full_Chart(this->chart1, period);
+							}
+							else
+								MessageBox::Show("Срок полезного использования > 12 месяцев", "Ошибки", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+						if (this->radioButton1->Checked)
+							if (period > 1) {
+								full_DGV(this->dataGridView1, period, start_cost, ratio);
+								full_Chart(this->chart1, period);
+							}
+							else
+								MessageBox::Show("Срок полезного использования > 1 год", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+					}
+					else
+						MessageBox::Show("Коэффициент ускорения в пределах от 1 до 3.", "Ошибки", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 				}
-				else
-					MessageBox::Show("Срок полезного использования > 12 месяцев", "Ошибки", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-			if(this->radioButton1->Checked)
-				if (period > 1) {
-					full_DGV(this->dataGridView1, period, start_cost, ratio);
-					full_Chart(this->chart1, period);
+				else {
+					if (this->radioButton2->Checked)
+						if (period > 12) {
+							full_DGV(this->dataGridView1, period, start_cost, ratio);
+							full_Chart(this->chart1, period);
+						}
+						else
+							MessageBox::Show("Срок полезного использования > 12 месяцев", "Ошибки", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+					if (this->radioButton1->Checked)
+						if (period > 1) {
+							full_DGV(this->dataGridView1, period, start_cost, ratio);
+							full_Chart(this->chart1, period);
+						}
+						else
+							MessageBox::Show("Срок полезного использования > 1 год", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);	
 				}
-				else
-					MessageBox::Show("Срок полезного использования > 1 год", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+				
+			}
+			else
+				MessageBox::Show("Первоначальная стоимость должна быть больше 0.", "Ошибки", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			
 		}
 		else
 			MessageBox::Show("Выберете метод расчета амортизации", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
@@ -527,9 +555,7 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 }
 private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
 	this->radioButton1->Checked = true;
-	this->start_cost->Text = "800";
-	this->ratio->Text = "1.8";
-	this->period->Text = "5";
+	this->ratio->Enabled = false;
 }
 private: System::Void radioButton1_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 	if (this->radioButton1->Checked)
@@ -538,6 +564,15 @@ private: System::Void radioButton1_CheckedChanged(System::Object^ sender, System
 private: System::Void radioButton2_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 	if (this->radioButton2->Checked)
 		this->label2->Text = "Срок полезного использования (в месяцах)";
+}
+
+private: System::Void method2_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (this->method2->Checked)
+		this->ratio->Enabled = true;
+	else {
+		this->ratio->Enabled = false;
+		this->ratio->Text = "";
+	}
 }
 };
 }
