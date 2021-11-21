@@ -80,8 +80,8 @@ namespace Practive5 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^ legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea2 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
 			this->start_cost = (gcnew System::Windows::Forms::TextBox());
 			this->period = (gcnew System::Windows::Forms::TextBox());
 			this->ratio = (gcnew System::Windows::Forms::TextBox());
@@ -218,6 +218,8 @@ namespace Practive5 {
 			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
 			this->dataGridView1->Location = System::Drawing::Point(15, 251);
 			this->dataGridView1->Name = L"dataGridView1";
+			this->dataGridView1->RowHeadersVisible = false;
+			this->dataGridView1->RowHeadersWidth = 20;
 			this->dataGridView1->Size = System::Drawing::Size(535, 373);
 			this->dataGridView1->TabIndex = 7;
 			// 
@@ -275,11 +277,11 @@ namespace Practive5 {
 			// 
 			// chart1
 			// 
-			chartArea1->Name = L"ChartArea1";
-			this->chart1->ChartAreas->Add(chartArea1);
-			legend1->Docking = System::Windows::Forms::DataVisualization::Charting::Docking::Bottom;
-			legend1->Name = L"Legend1";
-			this->chart1->Legends->Add(legend1);
+			chartArea2->Name = L"ChartArea1";
+			this->chart1->ChartAreas->Add(chartArea2);
+			legend2->Docking = System::Windows::Forms::DataVisualization::Charting::Docking::Bottom;
+			legend2->Name = L"Legend1";
+			this->chart1->Legends->Add(legend2);
 			this->chart1->Location = System::Drawing::Point(567, 228);
 			this->chart1->Name = L"chart1";
 			this->chart1->Size = System::Drawing::Size(490, 410);
@@ -324,7 +326,15 @@ namespace Practive5 {
 			for (int i = 0; i < am->Length; i++) {
 				sum += am[i];
 			}
-			return Math::Round(sum);
+			return Math::Round(sum,2);
+		}
+
+		double sum(List <double>^ am) {
+			double sum = 0;
+			for (int i = 0; i < am->Count; i++) {
+				sum += am[i];
+			}
+			return Math::Round(sum,2);
 		}
 
 		//Линейный метод
@@ -340,7 +350,7 @@ namespace Practive5 {
 
 		//Методом уменьшаемого остатка с учетом коэффициента ускорения
 		array <double>^ amortiz2(int period, double start_cost, double ratio) {
-			List<double>^ list = gcnew List <double>;
+			/*List<double>^ list = gcnew List <double>;
 			double ostatok = start_cost;
 			double norm = 1./period;
 			double am = ostatok * norm * ratio;
@@ -353,6 +363,23 @@ namespace Practive5 {
 				ostatok -= am;
 				list->Add(am);
 			}
+			return list->ToArray();*/
+
+			List<double>^ list = gcnew List <double>;
+			double ostatok = start_cost;
+			//double sum_am = 0;
+			int i;
+			for (i = period; i > 1; i--) {
+				double am = Math::Round(ostatok / i * ratio,2);
+				list->Add(am);
+				ostatok -= am;
+				
+			}
+			if (i == 1) {
+				double am = Math::Round(start_cost - sum(list),2);
+				list->Add(am);
+			}
+
 			return list->ToArray();
 		}
 
@@ -567,8 +594,9 @@ private: System::Void radioButton2_CheckedChanged(System::Object^ sender, System
 }
 
 private: System::Void method2_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (this->method2->Checked)
+	if (this->method2->Checked) 
 		this->ratio->Enabled = true;
+	
 	else {
 		this->ratio->Enabled = false;
 		this->ratio->Text = "";
