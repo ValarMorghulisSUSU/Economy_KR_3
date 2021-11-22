@@ -350,31 +350,19 @@ namespace Practive5 {
 
 		//Методом уменьшаемого остатка с учетом коэффициента ускорения
 		array <double>^ amortiz2(int period, double start_cost, double ratio) {
-			/*List<double>^ list = gcnew List <double>;
-			double ostatok = start_cost;
-			double norm = 1./period;
-			double am = ostatok * norm * ratio;
-			ostatok = start_cost - am;
-
-			list->Add(am);
-
-			for (int i = 1; i < period; i++) {
-				am = Math::Round(ostatok * norm * (i+1),2);
-				ostatok -= am;
-				list->Add(am);
-			}
-			return list->ToArray();*/
-
 			List<double>^ list = gcnew List <double>;
 			double ostatok = start_cost;
-			//double sum_am = 0;
 			int i;
+			// Норма армотизации
+			double k = 1. / period;
+
 			for (i = period; i > 1; i--) {
-				double am = Math::Round(ostatok / i * ratio,2);
+				double am = Math::Round(ostatok * k * ratio,2);
 				list->Add(am);
 				ostatok -= am;
 				
 			}
+			//Рассчет амортизации за последний год
 			if (i == 1) {
 				double am = Math::Round(start_cost - sum(list),2);
 				list->Add(am);
